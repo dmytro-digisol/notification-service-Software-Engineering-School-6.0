@@ -7,11 +7,11 @@ Build an API that allows users to subscribe to email notifications about new rel
 ## Endpoints
 Implement the following endpoints:
 
-POST /api/subscribe - Subscribe an email to release notifications for a given GitHub repository (format: owner/repo)
-GET /api/confirm/{token} - Confirm email subscription
-GET /api/unsubscribe/{token} - Unsubscribe from release notifications
-GET /api/subscriptions?email={email} - Get all active subscriptions for a given email
-Note: swagger.yaml file contains API documentation. You can view it using Swagger Editor. Changing the contracts is not allowed.
+- POST /api/subscribe - Subscribe an email to release notifications for a given GitHub repository (format: owner/repo)
+- GET /api/confirm/{token} - Confirm email subscription
+- GET /api/unsubscribe/{token} - Unsubscribe from release notifications
+- GET /api/subscriptions?email={email} - Get all active subscriptions for a given email
+ Note: swagger.yaml file contains API documentation. You can view it using Swagger Editor. Changing the contracts is not allowed.
 
 Requirements
 - The service must match the API described in the swagger documentation.
