@@ -11,7 +11,8 @@ Implement the following endpoints:
 - GET /api/confirm/{token} - Confirm email subscription
 - GET /api/unsubscribe/{token} - Unsubscribe from release notifications
 - GET /api/subscriptions?email={email} - Get all active subscriptions for a given email
- Note: swagger.yaml file contains API documentation. You can view it using Swagger Editor. Changing the contracts is not allowed.
+
+Note: swagger.yaml file contains API documentation. You can view it using Swagger Editor. Changing the contracts is not allowed.
 
 Requirements
 - The service must match the API described in the swagger documentation.
@@ -21,10 +22,9 @@ Requirements
 - The service must regularly check for new releases for all active subscriptions. When a new release is detected, send an email to the subscriber. For each repository, store last_seen_tag and only notify if a new release appears.
 - When creating a subscription, the service must verify the repository exists via GitHub API. Parameter format: owner/repo (e.g., golang/go). If the repository is not found - return 404. If the format is invalid - return 400.
 - The service must correctly handle 429 Too Many Requests from GitHub API (rate limit: 60 req/hour without token, 5000 with token).
-- You may use frameworks, but only “thin” solutions. High-level frameworks are prohibited: Nest.js (Node.js), Revel or Fx (Go), Laravel (PHP). Allowed: Fastify or Express (Node.js), Gin / Chi / net/http (Go), Slim or built-in language capabilities (PHP).
+- Built with *Express (Node.js)*
 - Unit tests for business logic are mandatory. Integration tests are a bonus.
 - You may add comments or logic descriptions in README.md. Correct logic can be an advantage in evaluation if you don’t fully complete the task.
--  Expected languages: Golang, , or PHP.
 
 Extras
 1. Deploy the API to a hosting + HTML page for subscribing to releases
@@ -32,4 +32,4 @@ Extras
 3. Redis caching of GitHub API responses with TTL 10 minutes
 4. API key authentication: endpoints secured with a token in the header
 5. Prometheus metrics - /metrics endpoint with basic service indicators
-5. GitHub Actions CI pipeline: run linter and tests on every push
+6. GitHub Actions CI pipeline: run linter and tests on every push
