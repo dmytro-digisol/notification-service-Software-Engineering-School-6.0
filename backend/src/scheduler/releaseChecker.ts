@@ -17,6 +17,10 @@ export class ReleaseChecker {
 		this.task?.stop();
 	}
 
+	async triggerNow(): Promise<void> {
+		await this.checkReleases();
+	}
+
 	private async checkReleases(): Promise<void> {
 		try {
 			const repos = (await Subscription.distinct("repo", {
@@ -42,14 +46,17 @@ export class ReleaseChecker {
 				$or: [{ lastSeenTag: null }, { lastSeenTag: { $ne: latestTag } }],
 			});
 
+			const detectedAt = new Date();
 			for (const sub of subs) {
 				await sendReleaseNotification(
 					sub.email,
 					repo,
 					latestTag,
 					sub.token,
+					detectedAt,
 				);
 				sub.lastSeenTag = latestTag;
+				sub.lastSeenAt = detectedAt;
 				await sub.save();
 			}
 		} catch (err) {

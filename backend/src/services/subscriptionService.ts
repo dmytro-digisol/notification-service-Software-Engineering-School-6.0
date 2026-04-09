@@ -57,6 +57,7 @@ export type SubscriptionView = {
   repo: string;
   confirmed: boolean;
   last_seen_tag: string | null;
+  last_seen_at: Date | null;
   createdAt: Date;
   token: string;
 };
@@ -72,6 +73,7 @@ export async function getSubscriptions(
     repo: s.repo,
     confirmed: s.confirmed,
     last_seen_tag: s.lastSeenTag,
+    last_seen_at: s.lastSeenAt ?? null,
     createdAt: s.createdAt,
     token: s.token,
   }));

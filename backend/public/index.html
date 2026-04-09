@@ -180,15 +180,19 @@
     }
 
     /* column widths */
-    .col-repo   { width: 42%; }
-    .col-status { width: 22%; }
-    .col-date   { width: 22%; }
+    .col-repo   { width: 30%; }
+    .col-status { width: 14%; }
+    .col-tag    { width: 16%; }
+    .col-kyiv   { width: 26%; }
     .col-action { width: 14%; text-align: center; }
 
-    .subs-table td.col-repo {
+    .subs-table td.col-repo,
+    .subs-table td.col-kyiv {
       word-break: break-all;
       white-space: normal;
     }
+    .col-kyiv { color: var(--dim); font-size: 11px; }
+    .col-tag  { color: var(--ok); font-size: 12px; }
 
     .badge-confirmed { color: var(--ok); }
     .badge-pending   { color: #ce9178; }
@@ -277,10 +281,11 @@
       .lbl { width: 3.8rem; font-size: 11px; }
       input { font-size: 12px; }
       button { font-size: 11px; padding: 0.3rem 0.7rem; }
-      .col-repo   { width: 38%; }
-      .col-status { width: 20%; }
-      .col-date   { width: 24%; }
-      .col-action { width: 18%; }
+      .col-repo   { width: 28%; }
+      .col-status { width: 14%; }
+      .col-tag    { width: 16%; }
+      .col-kyiv   { width: 28%; }
+      .col-action { width: 14%; }
     }
   </style>
 </head>
@@ -414,21 +419,40 @@
     }
   }
 
+  /* ── helpers ── */
+  function toKyivTime(iso) {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleString('uk-UA', {
+        timeZone: 'Europe/Kyiv',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false,
+      }) + ' Kyiv';
+    } catch (_) { return '—'; }
+  }
+
   /* ── table renderer ── */
   function renderTable(rows) {
     const wrap = document.getElementById('tbl');
     wrap.style.display = 'block';
 
     const tbody = rows.map(r => {
-      const date = new Date(r.createdAt).toISOString().slice(0, 10);
       const statusClass = r.confirmed ? 'badge-confirmed' : 'badge-pending';
       const statusText  = r.confirmed ? 'confirmed' : 'pending';
       const token = escAttr(r.token);
       const repoEsc = escHtml(r.repo);
+      const lastTag = r.last_seen_tag ? escHtml(r.last_seen_tag) : '<span style="color:var(--dim)">—</span>';
+      const lastKyiv = toKyivTime(r.last_seen_at);
       return `<tr>
         <td class="col-repo" title="${repoEsc}">${repoEsc}</td>
         <td class="col-status"><span class="${statusClass}">${statusText}</span></td>
-        <td class="col-date">${date}</td>
+        <td class="col-tag">${lastTag}</td>
+        <td class="col-kyiv">${escHtml(lastKyiv)}</td>
         <td class="col-action">
           <button class="btn-unsub" onclick="openModal('${token}','${repoEsc}')" ${!r.confirmed ? 'disabled title="Cannot remove while confirmation email is being sent"' : ''}>[ x ]</button>
         </td>
@@ -441,7 +465,8 @@
           <tr>
             <th class="col-repo">repo</th>
             <th class="col-status">status</th>
-            <th class="col-date">subscribed</th>
+            <th class="col-tag">last tag</th>
+            <th class="col-kyiv">last notified (kyiv)</th>
             <th class="col-action">remove</th>
           </tr>
         </thead>

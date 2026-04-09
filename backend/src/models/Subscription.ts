@@ -7,6 +7,7 @@ export interface ISubscription extends Document {
   confirmed: boolean;
   token: string;
   lastSeenTag: string | null;
+  lastSeenAt: Date | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -18,6 +19,7 @@ const subscriptionSchema = new Schema<ISubscription>(
     confirmed: { type: Boolean, default: false },
     token: { type: String, required: true },
     lastSeenTag: { type: String, default: null },
+    lastSeenAt: { type: Date, default: null },
   },
   { timestamps: true },
 );
