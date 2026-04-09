@@ -1,6 +1,10 @@
 # notification-service-Software-Engineering-School-6.0
 
-## se-school
+## Demo Video from Localhost
+
+https://github.com/user-attachments/assets/e0980d8f-b9a0-49c4-a7a0-90823b8b72ff
+
+## Software-Engineering-School-6.0
 GitHub Release Notification API
 Build an API that allows users to subscribe to email notifications about new releases of a chosen GitHub repository.
 
@@ -33,9 +37,4 @@ Extras
 4. API key authentication: endpoints secured with a token in the header
 5. Prometheus metrics - /metrics endpoint with basic service indicators
 6. GitHub Actions CI pipeline: run linter and tests on every push
-
-## Demo Video from Localhost
-
-
-https://github.com/user-attachments/assets/e0980d8f-b9a0-49c4-a7a0-90823b8b72ff
 
