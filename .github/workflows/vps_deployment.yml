@@ -78,7 +78,7 @@ jobs:
           username: ${{ secrets.DO_SSH_USER }}
           key: ${{ secrets.DO_SSH_KEY }}
           script: |
-            cd /var/www/notification-service
+            cd /var/www/notification-service-Software-Engineering-School-6.0
             git pull origin main
             docker compose up --build -d --remove-orphans
             docker image prune -f
