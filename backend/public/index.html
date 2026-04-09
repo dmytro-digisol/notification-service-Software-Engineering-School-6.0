@@ -289,7 +289,7 @@
 
   <div class="header">
     <pre id="ascii-logo"></pre>
-    <div class="service-name">notification-service-Software-Engineering-School-6.0 &mdash; Dmytro Shashkevych</div>
+    <div class="service-name">notification-service &mdash; Dmytro Shashkevych</div>
     <div class="sub">github release subscription manager</div>
   </div>
 
@@ -459,7 +459,7 @@
   /* ── modal / unsubscribe ── */
   let _pendingToken = null;
 
-  function _openModal(token, repo) {
+  function openModal(token, repo) {
     _pendingToken = token;
     document.getElementById('modal-repo').textContent = repo;
     document.getElementById('modal-overlay').classList.add('open');
@@ -470,7 +470,7 @@
     document.getElementById('modal-overlay').classList.remove('open');
   }
 
-  async function _confirmUnsub() {
+  async function confirmUnsub() {
     if (!_pendingToken) return;
     const token = _pendingToken;
     closeModal();
