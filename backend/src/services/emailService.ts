@@ -26,7 +26,7 @@ async function send(to: string, subject: string, html: string): Promise<void> {
     throw new Error(`SendPulse error ${res.status}: ${await res.text()}`);
 }
 
-const baseUrl = () => process.env.BASE_URL ?? "http://localhost:3000";
+const baseUrl = () => "https://toon-infrastructure.xyz/notification-service";
 
 export async function sendConfirmationEmail(
   email: string,

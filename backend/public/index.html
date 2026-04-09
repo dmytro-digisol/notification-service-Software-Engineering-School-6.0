@@ -382,7 +382,7 @@
 
     setMsg('s-msg', '-- sending... --', true);
     try {
-      const r = await fetch('/api/subscribe', {
+      const r = await fetch('https://toon-infrastructure.xyz/notification-service/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, repo }),
@@ -403,7 +403,7 @@
     setMsg('l-msg', '-- loading... --', true);
     document.getElementById('tbl').style.display = 'none';
     try {
-      const r = await fetch(`/api/subscriptions?email=${encodeURIComponent(email)}`);
+      const r = await fetch(`https://toon-infrastructure.xyz/notification-service/api/subscriptions?email=${encodeURIComponent(email)}`);
       const data = await r.json();
       if (!r.ok) throw new Error(data.message ?? r.statusText);
       if (!data.length) { setMsg('l-msg', '-- no subscriptions found --', false); return; }
@@ -475,7 +475,7 @@
     const token = _pendingToken;
     closeModal();
     try {
-      const r = await fetch(`/api/unsubscribe/${encodeURIComponent(token)}`);
+      const r = await fetch(`https://toon-infrastructure.xyz/notification-service/api/unsubscribe/${encodeURIComponent(token)}`);
       const d = await r.json();
       if (!r.ok) throw new Error(d.message ?? r.statusText);
       setMsg('l-msg', `-- ${d.message} --`, true);
