@@ -34,7 +34,7 @@
 
     .container {
       width: 100%;
-      max-width: 640px;
+      max-width: 960px;
     }
 
     /* ── header ── */
@@ -159,7 +159,7 @@
       border-collapse: collapse;
       font-family: var(--font);
       font-size: 12px;
-      table-layout: fixed;
+      table-layout: auto;
     }
 
     .subs-table th,
@@ -182,11 +182,11 @@
     }
 
     /* column widths */
-    .col-repo   { width: 30%; }
-    .col-status { width: 14%; }
-    .col-tag    { width: 16%; }
-    .col-kyiv   { width: 26%; }
-    .col-action { width: 14%; text-align: center; }
+    .col-repo   { min-width: 160px; }
+    .col-status { white-space: nowrap; }
+    .col-tag    { white-space: nowrap; }
+    .col-kyiv   { white-space: nowrap; }
+    .col-action { white-space: nowrap; text-align: center; }
 
     .subs-table td.col-repo,
     .subs-table td.col-kyiv,
@@ -376,7 +376,7 @@
   </div>
 
   <div class="footer">
-    press <span style="color:var(--accent)">enter</span> to submit &nbsp;·&nbsp; api on <span style="color:var(--accent)">/api</span>
+    &nbsp;·&nbsp; api on <span style="color:var(--accent)">/api</span>
   </div>
 
 </div>
