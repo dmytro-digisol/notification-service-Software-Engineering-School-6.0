@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>notification-service-Software-Engineering-School-6.0 Dmytro Shashkevych</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #f5f5f5;
+      --panel:   #ffffff;
+      --fg:      #1a1a1a;
+      --accent:  #0e7490;
+      --dim:     #6b7280;
+      --border:  #d1d5db;
+      --err:     #dc2626;
+      --ok:      #059669;
+      --font:    'Courier New', Courier, monospace;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2.5rem 1rem 3rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* ── header ── */
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+    .header pre {
+      font-family: var(--font);
+      color: var(--accent);
+      font-size: clamp(9px, 2vw, 13px);
+      line-height: 1.25;
+      overflow: hidden;
+    }
+    .header .sub {
+      color: var(--dim);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      margin-top: 0.4rem;
+    }
+    .header .service-name {
+      color: var(--fg);
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      margin-top: 0.25rem;
+    }
+
+    /* ── panels ── */
+    .panel {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      padding: 1.4rem 1.6rem 1.2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+    }
+    .panel-title {
+      position: absolute;
+      top: -0.65em;
+      left: 1rem;
+      background: var(--panel);
+      padding: 0 0.5rem;
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── form rows ── */
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.7rem;
+    }
+    .lbl {
+      color: var(--dim);
+      width: 4.5rem;
+      flex-shrink: 0;
+      text-align: right;
+      font-size: 12px;
+    }
+    input[type="email"],
+    input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 0;
+      color: var(--fg);
+      font-family: var(--font);
+      font-size: 13px;
+      padding: 0.3rem 0.6rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    input:focus { border-color: var(--accent); }
+
+    /* ── buttons ── */
+    button {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: var(--font);
+      font-size: 12px;
+      padding: 0.3rem 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.12s, color 0.12s;
+      flex-shrink: 0;
+    }
+    button:hover { background: var(--accent); color: var(--bg); }
+    button:active { opacity: 0.8; }
+
+    .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.4rem;
+    }
+
+    /* ── status messages ── */
+    .msg {
+      min-height: 1.4rem;
+      font-size: 12px;
+      margin-top: 0.6rem;
+      letter-spacing: 0.02em;
+    }
+    .msg.ok  { color: var(--ok); }
+    .msg.err { color: var(--err); }
+
+    /* ── subscriptions table ── */
+    .table-wrap {
+      margin-top: 1rem;
+      width: 100%;
+      overflow-x: hidden;
+    }
+
+    .subs-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font);
+      font-size: 12px;
+      table-layout: fixed;
+    }
+
+    .subs-table th,
+    .subs-table td {
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.6rem;
+      text-align: left;
+      vertical-align: middle;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .subs-table th {
+      background: var(--bg);
+      color: var(--accent);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* column widths */
+    .col-repo   { width: 42%; }
+    .col-status { width: 22%; }
+    .col-date   { width: 22%; }
+    .col-action { width: 14%; text-align: center; }
+
+    .subs-table td.col-repo {
+      word-break: break-all;
+      white-space: normal;
+    }
+
+    .badge-confirmed { color: var(--ok); }
+    .badge-pending   { color: #ce9178; }
+
+    .btn-unsub {
+      border-color: var(--err);
+      color: var(--err);
+      font-size: 11px;
+      padding: 0.15rem 0.5rem;
+    }
+    .btn-unsub:hover { background: var(--err); color: #fff; }
+    .btn-unsub:disabled { border-color: var(--muted); color: var(--muted); cursor: not-allowed; opacity: 0.45; }
+    .btn-unsub:disabled:hover { background: transparent; color: var(--muted); }
+
+    /* ── modal ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 1.6rem 2rem;
+      width: min(90vw, 380px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+      font-family: var(--font);
+    }
+
+    .modal h2 {
+      color: var(--accent);
+      font-size: 13px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .modal p {
+      font-size: 12px;
+      color: var(--fg);
+      margin-bottom: 1.2rem;
+      line-height: 1.5;
+    }
+
+    .modal p strong {
+      color: var(--accent);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 0.6rem;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel {
+      border-color: var(--dim);
+      color: var(--dim);
+    }
+    .btn-cancel:hover { background: var(--dim); color: var(--bg); }
+
+    .btn-confirm-unsub {
+      border-color: var(--err);
+      color: var(--err);
+    }
+    .btn-confirm-unsub:hover { background: var(--err); color: #fff; }
+
+    /* ── footer ── */
+    .footer {
+      margin-top: 2rem;
+      color: var(--dim);
+      font-size: 11px;
+      text-align: center;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── mobile tweaks ── */
+    @media (max-width: 480px) {
+      body { padding: 1.5rem 0.6rem 2rem; font-size: 13px; }
+      .panel { padding: 1.2rem 1rem 1rem; }
+      .lbl { width: 3.8rem; font-size: 11px; }
+      input { font-size: 12px; }
+      button { font-size: 11px; padding: 0.3rem 0.7rem; }
+      .col-repo   { width: 38%; }
+      .col-status { width: 20%; }
+      .col-date   { width: 24%; }
+      .col-action { width: 18%; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <pre id="ascii-logo"></pre>
+    <div class="service-name">notification-service-Software-Engineering-School-6.0 &mdash; Dmytro Shashkevych</div>
+    <div class="sub">github release subscription manager</div>
+  </div>
+
+  <!-- subscribe panel -->
+  <div class="panel">
+    <span class="panel-title">[ subscribe ]</span>
+
+    <div class="row">
+      <span class="lbl">email</span>
+      <input type="email" id="s-email" placeholder="you@example.com" />
+    </div>
+    <div class="row">
+      <span class="lbl">repo</span>
+      <input type="text" id="s-repo" placeholder="owner/repo or https://github.com/owner/repo" />
+    </div>
+    <div class="btn-row">
+      <button onclick="doSubscribe()">[ subscribe ]</button>
+    </div>
+    <div class="msg" id="s-msg"></div>
+  </div>
+
+  <!-- lookup panel -->
+  <div class="panel">
+    <span class="panel-title">[ subscriptions ]</span>
+
+    <div class="row">
+      <span class="lbl">email</span>
+      <input type="email" id="l-email" placeholder="you@example.com" />
+      <button onclick="doLookup()">[ lookup ]</button>
+    </div>
+    <div class="msg" id="l-msg"></div>
+    <div class="table-wrap" id="tbl" style="display:none"></div>
+  </div>
+
+  <div class="footer">
+    press <span style="color:var(--accent)">enter</span> to submit &nbsp;·&nbsp; api on <span style="color:var(--accent)">/api</span>
+  </div>
+
+</div>
+
+<!-- confirmation modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <h2>[ confirm unsubscribe ]</h2>
+    <p>Unsubscribe from <strong id="modal-repo"></strong>?<br>This action cannot be undone.</p>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()">[ cancel ]</button>
+      <button class="btn-confirm-unsub" onclick="confirmUnsub()">[ unsubscribe ]</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── helpers ── */
+  function setMsg(id, text, ok) {
+    const el = document.getElementById(id);
+    el.textContent = text;
+    el.className = `msg ${ok ? 'ok' : 'err'}`;
+  }
+
+  function parseRepo(raw) {
+    const s = raw.trim();
+    if (!s) return { error: 'repo is required' };
+    try {
+      const url = new URL(s.includes('://') ? s : `https://${s}`);
+      if (url.hostname === 'github.com') {
+        const parts = url.pathname.replace(/^\//, '').split('/');
+        if (parts.length >= 2 && parts[0] && parts[1]) {
+          const repo = `${parts[0]}/${parts[1]}`;
+          if (/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(repo)) return { repo };
+        }
+        return { error: 'could not extract owner/repo from GitHub URL' };
+      }
+    } catch (_) {}
+    if (/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(s)) return { repo: s };
+    return { error: 'repo must be "owner/repo" or a github.com URL' };
+  }
+
+  /* ── subscribe ── */
+  async function doSubscribe() {
+    const email = document.getElementById('s-email').value.trim();
+    const repoInput = document.getElementById('s-repo');
+    const parsed = parseRepo(repoInput.value);
+
+    if (!email) { setMsg('s-msg', '-- email is required --', false); return; }
+    if (parsed.error) { setMsg('s-msg', `-- ${parsed.error} --`, false); return; }
+
+    const repo = parsed.repo;
+    repoInput.value = repo;
+
+    setMsg('s-msg', '-- sending... --', true);
+    try {
+      const r = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, repo }),
+      });
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.message ?? r.statusText);
+      setMsg('s-msg', `-- ${d.message} --`, true);
+    } catch (e) {
+      setMsg('s-msg', `-- ${e.message} --`, false);
+    }
+  }
+
+  /* ── lookup ── */
+  async function doLookup() {
+    const email = document.getElementById('l-email').value.trim();
+    if (!email) { setMsg('l-msg', '-- enter an email --', false); return; }
+
+    setMsg('l-msg', '-- loading... --', true);
+    document.getElementById('tbl').style.display = 'none';
+    try {
+      const r = await fetch(`/api/subscriptions?email=${encodeURIComponent(email)}`);
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.message ?? r.statusText);
+      if (!data.length) { setMsg('l-msg', '-- no subscriptions found --', false); return; }
+      setMsg('l-msg', '', true);
+      renderTable(data);
+    } catch (e) {
+      setMsg('l-msg', `-- ${e.message} --`, false);
+    }
+  }
+
+  /* ── table renderer ── */
+  function renderTable(rows) {
+    const wrap = document.getElementById('tbl');
+    wrap.style.display = 'block';
+
+    const tbody = rows.map(r => {
+      const date = new Date(r.createdAt).toISOString().slice(0, 10);
+      const statusClass = r.confirmed ? 'badge-confirmed' : 'badge-pending';
+      const statusText  = r.confirmed ? 'confirmed' : 'pending';
+      const token = escAttr(r.token);
+      const repoEsc = escHtml(r.repo);
+      return `<tr>
+        <td class="col-repo" title="${repoEsc}">${repoEsc}</td>
+        <td class="col-status"><span class="${statusClass}">${statusText}</span></td>
+        <td class="col-date">${date}</td>
+        <td class="col-action">
+          <button class="btn-unsub" onclick="openModal('${token}','${repoEsc}')" ${!r.confirmed ? 'disabled title="Cannot remove while confirmation email is being sent"' : ''}>[ x ]</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+    wrap.innerHTML = `
+      <table class="subs-table">
+        <thead>
+          <tr>
+            <th class="col-repo">repo</th>
+            <th class="col-status">status</th>
+            <th class="col-date">subscribed</th>
+            <th class="col-action">remove</th>
+          </tr>
+        </thead>
+        <tbody>${tbody}</tbody>
+      </table>`;
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function escAttr(s) {
+    return String(s).replace(/'/g,"\\'");
+  }
+
+  /* ── modal / unsubscribe ── */
+  let _pendingToken = null;
+
+  function _openModal(token, repo) {
+    _pendingToken = token;
+    document.getElementById('modal-repo').textContent = repo;
+    document.getElementById('modal-overlay').classList.add('open');
+  }
+
+  function closeModal() {
+    _pendingToken = null;
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  async function _confirmUnsub() {
+    if (!_pendingToken) return;
+    const token = _pendingToken;
+    closeModal();
+    try {
+      const r = await fetch(`/api/unsubscribe/${encodeURIComponent(token)}`);
+      const d = await r.json();
+      if (!r.ok) throw new Error(d.message ?? r.statusText);
+      setMsg('l-msg', `-- ${d.message} --`, true);
+      doLookup();
+    } catch (e) {
+      setMsg('l-msg', `-- ${e.message} --`, false);
+    }
+  }
+
+  /* close modal on overlay click */
+  document.getElementById('modal-overlay').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  /* ── keyboard shortcuts ── */
+  document.getElementById('s-repo').addEventListener('keydown',  e => e.key === 'Enter' && doSubscribe());
+  document.getElementById('s-email').addEventListener('keydown', e => e.key === 'Enter' && doSubscribe());
+  document.getElementById('l-email').addEventListener('keydown', e => e.key === 'Enter' && doLookup());
+  document.addEventListener('keydown', e => e.key === 'Escape' && closeModal());
+</script>
+</body>
+</html>

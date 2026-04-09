@@ -1,0 +1,7 @@
+services:
+  app:
+    build: ./backend
+    ports:
+      - "3535:3535"
+    env_file: ./backend/.env
+    restart: unless-stopped
