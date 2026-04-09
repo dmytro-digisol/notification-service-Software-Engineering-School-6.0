@@ -22,25 +22,25 @@ app.use(errorHandler);
 
 const releaseChecker = new ReleaseChecker();
 
-// // Dev-only: manually trigger release check
-// app.post("/api/admin/trigger-check", (_req, res) => {
-//   void releaseChecker.triggerNow();
-//   res.json({ message: "Release check triggered." });
-// });
+// Dev-only: manually trigger release check
+app.post("/api/admin/trigger-check", (_req, res) => {
+  void releaseChecker.triggerNow();
+  res.json({ message: "Release check triggered." });
+});
 
-// // Dev-only: reset lastSeenTag for all subs of a repo so next check re-notifies
-// app.post("/api/admin/reset-last-seen", async (req, res) => {
-//   const { repo } = req.body as { repo?: string };
-//   if (!repo) {
-//     res.status(400).json({ message: "repo required" });
-//     return;
-//   }
-//   await Subscription.updateMany(
-//     { repo },
-//     { $set: { lastSeenTag: null, lastSeenAt: null } },
-//   );
-//   res.json({ message: `lastSeenTag reset for ${repo}` });
-// });
+// Dev-only: reset lastSeenTag for all subs of a repo so next check re-notifies
+app.post("/api/admin/reset-last-seen", async (req, res) => {
+  const { repo } = req.body as { repo?: string };
+  if (!repo) {
+    res.status(400).json({ message: "repo required" });
+    return;
+  }
+  await Subscription.updateMany(
+    { repo },
+    { $set: { lastSeenTag: null, lastSeenAt: null } },
+  );
+  res.json({ message: `lastSeenTag reset for ${repo}` });
+});
 
 const start = async (): Promise<void> => {
   await connectDB();

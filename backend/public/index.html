@@ -47,7 +47,8 @@
       color: var(--accent);
       font-size: clamp(9px, 2vw, 13px);
       line-height: 1.25;
-      overflow: hidden;
+      overflow-x: auto;
+      overflow-y: hidden;
     }
     .header .sub {
       color: var(--dim);
@@ -149,7 +150,8 @@
     .table-wrap {
       margin-top: 1rem;
       width: 100%;
-      overflow-x: hidden;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .subs-table {
@@ -187,7 +189,8 @@
     .col-action { width: 14%; text-align: center; }
 
     .subs-table td.col-repo,
-    .subs-table td.col-kyiv {
+    .subs-table td.col-kyiv,
+    .subs-table td.col-tag {
       word-break: break-all;
       white-space: normal;
     }
@@ -281,11 +284,54 @@
       .lbl { width: 3.8rem; font-size: 11px; }
       input { font-size: 12px; }
       button { font-size: 11px; padding: 0.3rem 0.7rem; }
-      .col-repo   { width: 28%; }
-      .col-status { width: 14%; }
-      .col-tag    { width: 16%; }
-      .col-kyiv   { width: 28%; }
-      .col-action { width: 14%; }
+    }
+
+    /* ── stacked card layout on narrow screens ── */
+    @media (max-width: 560px) {
+      .subs-table thead { display: none; }
+
+      .subs-table,
+      .subs-table tbody,
+      .subs-table tr,
+      .subs-table td {
+        display: block;
+        width: 100% !important;
+      }
+
+      .subs-table tr {
+        border: 1px solid var(--border);
+        margin-bottom: 0.75rem;
+        padding: 0.55rem 0.7rem;
+      }
+
+      .subs-table td {
+        border: none;
+        padding: 0.18rem 0;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+        word-break: break-word;
+        display: grid;
+        grid-template-columns: 6rem 1fr;
+        gap: 0.4rem;
+        align-items: start;
+        text-align: left;
+      }
+
+      .subs-table td::before {
+        content: attr(data-label);
+        color: var(--accent);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        padding-top: 0.1rem;
+        flex-shrink: 0;
+      }
+
+      /* suppress per-cell color overrides that rely on class selectors */
+      .subs-table td.col-tag  { color: inherit; font-size: inherit; }
+      .subs-table td.col-kyiv { color: inherit; font-size: inherit; }
+      .subs-table td.col-action { text-align: left; }
     }
   </style>
 </head>
@@ -449,11 +495,11 @@
       const lastTag = r.last_seen_tag ? escHtml(r.last_seen_tag) : '<span style="color:var(--dim)">—</span>';
       const lastKyiv = toKyivTime(r.last_seen_at);
       return `<tr>
-        <td class="col-repo" title="${repoEsc}">${repoEsc}</td>
-        <td class="col-status"><span class="${statusClass}">${statusText}</span></td>
-        <td class="col-tag">${lastTag}</td>
-        <td class="col-kyiv">${escHtml(lastKyiv)}</td>
-        <td class="col-action">
+        <td class="col-repo" data-label="repo" title="${repoEsc}">${repoEsc}</td>
+        <td class="col-status" data-label="status"><span class="${statusClass}">${statusText}</span></td>
+        <td class="col-tag" data-label="last tag">${lastTag}</td>
+        <td class="col-kyiv" data-label="last notified">${escHtml(lastKyiv)}</td>
+        <td class="col-action" data-label="remove">
           <button class="btn-unsub" onclick="openModal('${token}','${repoEsc}')" ${!r.confirmed ? 'disabled title="Cannot remove while confirmation email is being sent"' : ''}>[ x ]</button>
         </td>
       </tr>`;

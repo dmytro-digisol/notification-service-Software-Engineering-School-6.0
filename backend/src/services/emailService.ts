@@ -47,13 +47,61 @@ export async function sendConfirmationEmail(
   token: string,
 ): Promise<void> {
   const confirmUrl = `${baseUrl()}/api/confirm/${token}`;
+  const repoUrl = `https://github.com/${repo}`;
   const unsubscribeUrl = `${baseUrl()}/api/unsubscribe/${token}`;
 
-  await send(
-    email,
-    `Confirm your subscription to ${repo} releases`,
-    `<p>Please <a href="${confirmUrl}">confirm your subscription</a> to <strong>${repo}</strong> release notifications.</p><p><a href="${unsubscribeUrl}">Unsubscribe</a></p>`,
-  );
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#f5f5f5;font-family:'Courier New',Courier,monospace;font-size:14px;color:#1a1a1a;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px;">
+    <tr><td align="center">
+      <table width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid #d1d5db;">
+        <!-- header -->
+        <tr>
+          <td style="background:#0e7490;padding:20px 28px;">
+            <div style="color:#ffffff;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;">GitHub Release Notifier</div>
+            <div style="color:#a5f3fc;font-size:11px;margin-top:4px;letter-spacing:0.08em;">notification-service &mdash; SE-School-6.0</div>
+          </td>
+        </tr>
+        <!-- body -->
+        <tr>
+          <td style="padding:28px;">
+            <p style="margin:0 0 16px;font-size:15px;font-weight:bold;color:#0e7490;">Confirm Your Subscription</p>
+
+            <table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #d1d5db;margin-bottom:20px;">
+              <tr>
+                <td style="padding:10px 14px;background:#f5f5f5;color:#6b7280;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;width:130px;">Repository</td>
+                <td style="padding:10px 14px;"><a href="${repoUrl}" style="color:#0e7490;text-decoration:none;">${repo}</a></td>
+              </tr>
+            </table>
+
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="padding:0 8px 0 0;">
+                  <a href="${confirmUrl}" style="display:block;text-align:center;padding:10px;background:#0e7490;color:#ffffff;text-decoration:none;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;">[ confirm subscription ]</a>
+                </td>
+                <td style="padding:0 0 0 8px;">
+                  <a href="${repoUrl}" style="display:block;text-align:center;padding:10px;border:1px solid #0e7490;color:#0e7490;text-decoration:none;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;">[ open repo ]</a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <!-- footer -->
+        <tr>
+          <td style="padding:16px 28px;border-top:1px solid #d1d5db;background:#f5f5f5;">
+            <p style="margin:0;font-size:11px;color:#6b7280;">You are receiving this because you requested to subscribe to <strong>${repo}</strong> releases.</p>
+            <p style="margin:6px 0 0;font-size:11px;"><a href="${unsubscribeUrl}" style="color:#dc2626;">Unsubscribe</a></p>
+          </td>
+        </tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>`;
+
+  await send(email, `Confirm your subscription to ${repo} releases`, html);
 
   logger.info("Confirmation email sent", { email, repo });
 }
