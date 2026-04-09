@@ -33,3 +33,9 @@ Extras
 4. API key authentication: endpoints secured with a token in the header
 5. Prometheus metrics - /metrics endpoint with basic service indicators
 6. GitHub Actions CI pipeline: run linter and tests on every push
+
+## Demo Video from Localhost
+
+
+https://github.com/user-attachments/assets/e0980d8f-b9a0-49c4-a7a0-90823b8b72ff
+
