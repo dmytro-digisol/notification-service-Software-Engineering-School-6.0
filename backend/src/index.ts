@@ -47,7 +47,7 @@ app.use("/api", subscriptionRouter);
 // Prometheus metrics endpoint
 app.get("/metrics", async (_req: Request, res: Response) => {
   res.set("Content-Type", register.contentType);
-  res.end(await register.getMetricsAsJSON());
+  res.end(await register.metrics());
 });
 
 app.use(errorHandler);
