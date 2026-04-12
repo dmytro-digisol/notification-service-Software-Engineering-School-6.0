@@ -32,11 +32,11 @@ Requirements
 - Unit tests for business logic are mandatory. Integration tests are a bonus.
 - You may add comments or logic descriptions in README.md. Correct logic can be an advantage in evaluation if you don’t fully complete the task.
 
-Extras
-1. Deploy the API to a hosting + HTML page for subscribing to releases
-2. gRPC interface as an alternative or addition to REST API
-3. Redis caching of GitHub API responses with TTL 10 minutes
-4. API key authentication: endpoints secured with a token in the header
-5. Prometheus metrics - /metrics endpoint with basic service indicators
-6. GitHub Actions CI pipeline: run linter and tests on every push
+Extras:
+- [x] Deploy the API to a hosting + HTML page for subscribing to releases
+- [ ] gRPC interface as an alternative or addition to REST API
+- [x] Redis caching of GitHub API responses with TTL 10 minutes
+- [ ] API key authentication: endpoints secured with a token in the header
+- [x] Prometheus metrics - /metrics endpoint with basic service indicators
+- [x] GitHub Actions CI pipeline: run linter and tests on every push
 
