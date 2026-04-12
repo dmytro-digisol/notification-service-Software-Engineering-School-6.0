@@ -18,7 +18,13 @@ const logger = winston.createLogger({
 					({ timestamp, level, message, service, ...meta }) => {
 						let msg = `${timestamp} [${service}] ${level}: ${message}`;
 						if (Object.keys(meta).length > 0) {
-							msg += ` ${JSON.stringify(meta)}`;
+							const serialized = JSON.stringify(meta, (_key, value) => {
+								if (value instanceof Error) {
+									return { ...value, message: value.message, stack: value.stack };
+								}
+								return value;
+							});
+							msg += ` ${serialized}`;
 						}
 						return msg;
 					},

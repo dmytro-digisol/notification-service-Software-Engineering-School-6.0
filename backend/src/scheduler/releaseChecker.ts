@@ -11,6 +11,24 @@ export class ReleaseChecker {
 		const schedule = process.env.CHECK_INTERVAL_CRON ?? "*/5 * * * *";
 		this.task = cron.schedule(schedule, () => void this.checkReleases());
 		logger.info("Release checker started", { schedule });
+		// Pre-warm Redis cache on startup — fetch only, no notifications
+		void this.warmCache();
+	}
+
+	private async warmCache(): Promise<void> {
+		try {
+			const repos = (await Subscription.distinct("repo", {
+				confirmed: true,
+			})) as string[];
+			await Promise.all(
+				repos.map((repo) => getLatestRelease(repo).catch(() => {})),
+			);
+			if (repos.length > 0) {
+				logger.info("Release cache pre-warmed", { repos: repos.length });
+			}
+		} catch (err) {
+			logger.error("Cache warm error", { error: err });
+		}
 	}
 
 	stop(): void {

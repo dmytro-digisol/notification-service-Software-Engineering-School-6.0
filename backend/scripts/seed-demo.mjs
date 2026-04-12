@@ -35,17 +35,19 @@ try {
     if (!process.env[key]) process.env[key] = value;
   }
 } catch {
-  console.warn("⚠️  No .env file found — using existing environment variables.");
+  console.warn(
+    " No .env file found — using existing environment variables.",
+  );
 }
 
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
-const DEMO_EMAIL = process.argv[2] || "demo@example.com";
+const DEMO_EMAIL = process.argv[2] || "dmytro@digisol.agency";
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  console.error("❌  MONGODB_URI is not set. Add it to backend/.env");
+  console.error("MONGODB_URI is not set. Add it to backend/.env");
   process.exit(1);
 }
 
@@ -54,19 +56,19 @@ if (!MONGODB_URI) {
 // ---------------------------------------------------------------------------
 const DEMO_REPOS = [
   // Frontend
-  { repo: "facebook/react",          category: "Frontend Framework" },
-  { repo: "vercel/next.js",          category: "Full-stack Framework" },
-  { repo: "vitejs/vite",             category: "Build Tool" },
+  { repo: "facebook/react", category: "Frontend Framework" },
+  { repo: "vercel/next.js", category: "Full-stack Framework" },
+  { repo: "vitejs/vite", category: "Build Tool" },
   { repo: "tailwindlabs/tailwindcss", category: "CSS Framework" },
   // Language / Runtime
-  { repo: "microsoft/typescript",    category: "Language" },
-  { repo: "nodejs/node",             category: "Runtime" },
+  { repo: "microsoft/typescript", category: "Language" },
+  { repo: "nodejs/node", category: "Runtime" },
   // Backend / Infra
-  { repo: "expressjs/express",       category: "Web Framework" },
-  { repo: "prisma/prisma",           category: "ORM / Database" },
-  { repo: "supabase/supabase",       category: "Backend-as-a-Service" },
+  { repo: "expressjs/express", category: "Web Framework" },
+  { repo: "prisma/prisma", category: "ORM / Database" },
+  { repo: "supabase/supabase", category: "Backend-as-a-Service" },
   // DevOps
-  { repo: "docker/compose",          category: "DevOps" },
+  { repo: "docker/compose", category: "DevOps" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -74,12 +76,12 @@ const DEMO_REPOS = [
 // ---------------------------------------------------------------------------
 const subscriptionSchema = new mongoose.Schema(
   {
-    email:       { type: String, required: true },
-    repo:        { type: String, required: true },
-    confirmed:   { type: Boolean, default: false },
-    token:       { type: String, required: true },
+    email: { type: String, required: true },
+    repo: { type: String, required: true },
+    confirmed: { type: Boolean, default: false },
+    token: { type: String, required: true },
     lastSeenTag: { type: String, default: null },
-    lastSeenAt:  { type: Date, default: null },
+    lastSeenAt: { type: Date, default: null },
   },
   { timestamps: true },
 );
@@ -105,22 +107,22 @@ async function main() {
   for (const { repo, category } of DEMO_REPOS) {
     try {
       await Subscription.create({
-        email:     DEMO_EMAIL,
+        email: DEMO_EMAIL,
         repo,
         confirmed: true,
-        token:     randomUUID(),
+        token: randomUUID(),
         lastSeenTag: null,
-        lastSeenAt:  null,
+        lastSeenAt: null,
       });
-      console.log(`   ✅  [${category}] ${repo}`);
+      console.log(`    [${category}] ${repo}`);
       inserted++;
     } catch (err) {
       if (err.code === 11000) {
         // Duplicate key — subscription already exists
-        console.log(`   ⏭️   [${category}] ${repo}  (already exists, skipped)`);
+        console.log(`  [${category}] ${repo}  (already exists, skipped)`);
         skipped++;
       } else {
-        console.error(`   ❌  [${category}] ${repo}  ERROR: ${err.message}`);
+        console.error(`  [${category}] ${repo}  ERROR: ${err.message}`);
       }
     }
   }

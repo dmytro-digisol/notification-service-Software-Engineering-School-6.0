@@ -29,7 +29,7 @@ async function send(to: string, subject: string, html: string): Promise<void> {
 const baseUrl = () => "https://toon-infrastructure.xyz/notification-service";
 
 function toKyivTime(date: Date): string {
-  return date.toLocaleString("uk-UA", {
+  return `${date.toLocaleString("uk-UA", {
     timeZone: "Europe/Kyiv",
     year: "numeric",
     month: "2-digit",
@@ -38,7 +38,7 @@ function toKyivTime(date: Date): string {
     minute: "2-digit",
     second: "2-digit",
     hour12: false,
-  }) + " (Kyiv)";
+  })} (Kyiv)`;
 }
 
 export async function sendConfirmationEmail(
