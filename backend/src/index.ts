@@ -1,4 +1,6 @@
 import "dotenv/config.js";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./swagger.js";
 import express, {
   type NextFunction,
   type Request,
@@ -43,6 +45,13 @@ app.use(express.static(join(__dirname, "../public")));
 app.use(express.json({ limit: "16kb" }));
 app.use(cors());
 app.use("/api", subscriptionRouter);
+
+// Swagger UI
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/api/docs.json", (_req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/json");
+  res.send(swaggerSpec);
+});
 
 // Prometheus metrics endpoint
 app.get("/metrics", async (_req: Request, res: Response) => {

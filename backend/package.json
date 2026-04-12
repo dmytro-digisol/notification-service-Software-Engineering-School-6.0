@@ -8,6 +8,9 @@
     "onlyBuiltDependencies": [
       "esbuild",
       "mongodb-memory-server"
+    ],
+    "ignoredBuiltDependencies": [
+      "@scarf/scarf"
     ]
   },
   "scripts": {
@@ -17,7 +20,8 @@
     "test": "vitest run",
     "lint": "pnpx @biomejs/biome lint --write --unsafe ./src ./public",
     "seed:demo": "node scripts/seed-demo.mjs",
-    "demo:notify": "node scripts/demo-notify.mjs"
+    "demo:notify": "node scripts/demo-notify.mjs",
+    "swag": "node scripts/generate-swagger.mjs"
   },
   "dependencies": {
     "cors": "^2.8.6",
@@ -27,6 +31,8 @@
     "mongoose": "^7.8.8",
     "node-cron": "^3.0.3",
     "prom-client": "^15.1.3",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "winston": "^3.19.0"
   },
   "devDependencies": {
@@ -36,6 +42,8 @@
     "@types/node": "^25.1.0",
     "@types/node-cron": "^3.0.11",
     "@types/supertest": "^6.0.3",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "mongodb-memory-server": "^11.0.1",
     "supertest": "^7.2.2",
     "ts-node": "^10.9.2",
