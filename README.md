@@ -1,6 +1,14 @@
 # notification-service-Software-Engineering-School-6.0
 
-Making Changes to Retrigger New Releases
+
+New Release Email Notifications :
+
+- <img width="880" height="731" alt="image" src="https://github.com/user-attachments/assets/ed421b1f-6b1a-4a31-bb9f-2ba6477ed4c4" />
+- <img width="891" height="945" alt="image" src="https://github.com/user-attachments/assets/bbb692be-f05a-43b8-aec7-d7a16afc8d11" />
+
+
+
+
 
 ## Demo Video from Localhost
 
